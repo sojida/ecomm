@@ -35,7 +35,6 @@ class ItemsController < ActionController::API
         id = params[:id]
         if val['quantity'] 
             removed = Productsmanager.remove(id.to_i, val['quantity'].to_i)
-            puts removed
             if removed
                 return render :json => {"status": true, "products": Productsmanager.products }
             else

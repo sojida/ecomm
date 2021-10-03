@@ -44,7 +44,6 @@ module Productsmanager
       @products.each do |p|
         next unless p.id == id
 
-        puts p
         remaining_quantity = p.quantity - quantity
         if remaining_quantity < 0
           return false
