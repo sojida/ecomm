@@ -20,5 +20,5 @@ func registerRouter() {
 	router.PATCH("/cart/:cart_id/item", Cartapi.RemoveProduct)
 	router.DELETE("/cart/:cart_id/item", Cartapi.DeleteProduct)
 
-	router.Run(":3000")
+	router.Run(":3030")
 }
