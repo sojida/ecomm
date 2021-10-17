@@ -46,12 +46,12 @@ app.post('/purchase/:client_id', async (req, res) => {
     const wallet = await Wallet.GetWallet({ wallet_id: client.wallet.id });
 
     if (cart.TotalPrice <= 0) {
-        res.status(400).json({ message: 'Nothing to purchase here, add some items to your cart' });
+        return res.status(400).json({ message: 'Nothing to purchase here, add some items to your cart' });
     }
 
     // check wallet can pay items in cart
     if (wallet.balance < cart.TotalPrice) {
-        res.status(400).json({ message: 'Insufficient funds' });
+        return res.status(400).json({ message: 'Insufficient funds' });
     }
 
 
