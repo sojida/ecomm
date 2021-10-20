@@ -1,0 +1,13 @@
+{
+    "service": {
+      "name": "client",
+      "tags": ["js"],
+      "port": 3333,
+      "address": "http://localhost:3333",
+      "check": {
+        "http": "http://localhost:3333/health",
+        "method": "GET",
+        "interval": "10s"
+      }
+    }
+  }

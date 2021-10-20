@@ -7,6 +7,10 @@ app.use(express.json());
 
 const db = []
 
+app.get('/health', async (req, res) => {
+    res.status(200).json({ status: 'UP' });
+})
+
 app.post('/purchase', (req, res) => {
     const purchase = req.body;
     

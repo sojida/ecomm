@@ -12,6 +12,11 @@ app.use(express.json());
 
 const clients = {}
 
+
+app.get('/health', async (req, res) => {
+    return res.status(200).json({ status: 'UP' });
+})
+
 app.post('/client', async (req, res) => {
     const client = new Client()
     const wallet = await Wallet.CreateWallet({ client_id: client.id });
