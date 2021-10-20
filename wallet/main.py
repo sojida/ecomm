@@ -19,6 +19,10 @@ class CreateTransactionModel(BaseModel):
     amount: int
     description: str
 
+@app.get('/health', status_code=200)
+async def health():
+    return {"status": "UP"}
+
 
 @app.post('/wallet', status_code=201)
 async def createWallet(body: RequestBodyModel):

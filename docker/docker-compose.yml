@@ -1,5 +1,8 @@
 version: '3'
 services:
+  consul:
+    build: ../consul
+    network_mode: host
   client: 
     build: ../client
     ports: 

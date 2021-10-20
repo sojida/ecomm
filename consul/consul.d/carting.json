@@ -1,0 +1,13 @@
+{
+  "service": {
+    "name": "carting",
+    "tags": ["go"],
+    "port": 3030,
+    "address": "http://localhost:3030",
+    "check": {
+      "http": "http://localhost:3030/health",
+      "method": "GET",
+      "interval": "10s"
+    }
+  }
+}
