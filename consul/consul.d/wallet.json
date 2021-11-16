@@ -3,9 +3,9 @@
       "name": "wallet",
       "tags": ["python"],
       "port": 8000,
-      "address": "http://localhost:8000",
+      "address": "http://wallet:8000",
       "check": {
-        "http": "http://localhost:8000/health",
+        "http": "http://wallet:8000/health",
         "method": "GET",
         "interval": "10s"
       }
