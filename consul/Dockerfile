@@ -97,4 +97,4 @@ COPY ./consul.d  ./consul.d
 # By default you'll get an insecure single-node development server that stores
 # everything in RAM, exposes a web UI and HTTP endpoints, and bootstraps itself.
 # Don't use this configuration for production.
-CMD ["consul", "agent", "-dev", "-node", "machine", "-config-dir=./consul.d"]
+CMD ["consul", "agent", "-server", "-ui", "-bootstrap-expect=1", "-node=machine", "-bind=0.0.0.0", "-config-dir=./consul.d", "-client=0.0.0.0", "-data-dir=/consul/data"]

@@ -3,9 +3,9 @@
       "name": "purchase",
       "tags": ["js"],
       "port": 4000,
-      "address": "http://localhost:4000",
+      "address": "http://purchase:4000",
       "check": {
-        "http": "http://localhost:4000/health",
+        "http": "http://purchase:4000/health",
         "method": "GET",
         "interval": "10s"
       }
