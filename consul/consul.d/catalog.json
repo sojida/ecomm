@@ -1,0 +1,14 @@
+{
+    "service": {
+      "name": "catalog",
+      "tags": ["rails"],
+      "port": 3000,
+      "address": "http://catalog:3000",
+      "check": {
+        "http": "http://catalog:3000/items",
+        "method": "GET",
+        "interval": "10s"
+      }
+    }
+  }
+  
