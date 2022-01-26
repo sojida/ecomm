@@ -10,7 +10,7 @@ gcr-build-client:
   services:
     - docker:dind
   script:
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registery.gitlab.com
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registry.gitlab.com
     - docker build -t registry.gitlab.com/sojidaniels/e-commerce ./client
     - docker push registry.gitlab.com/sojidaniels/e-commerce
 
