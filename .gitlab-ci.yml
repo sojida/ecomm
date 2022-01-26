@@ -1,0 +1,35 @@
+image: ubuntu:latest
+
+stages:
+  - gcr-build-client
+  
+
+lint:
+  stage: lint
+  image: node:16
+  script:
+    - npm install
+    - npm run build
+
+deploy:
+  stage: deploy
+  image: ruby:latest
+  before_script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+  script:
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    - develop
+
+gcr-build-client:
+  stage: gcr-build-client
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registery.gitlab.com
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce ./client
+    - docker push registry.gitlab.com/sojidaniels/e-commerce
+
