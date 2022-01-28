@@ -13,4 +13,6 @@ gcr-build-client:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registry.gitlab.com
     - docker build -t registry.gitlab.com/sojidaniels/e-commerce ./client
     - docker push registry.gitlab.com/sojidaniels/e-commerce
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce ./purchase
+    - docker push registry.gitlab.com/sojidaniels/e-commerce
 
