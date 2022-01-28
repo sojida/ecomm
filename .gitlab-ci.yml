@@ -15,4 +15,10 @@ gcr-build-client:
     - docker push registry.gitlab.com/sojidaniels/e-commerce/client:latest
     - docker build -t registry.gitlab.com/sojidaniels/e-commerce/purchase ./purchase
     - docker push registry.gitlab.com/sojidaniels/e-commerce/purchase:latest
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/catalog ./catalog
+    - docker push registry.gitlab.com/sojidaniels/e-commerce/catalog:latest
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/carting ./carting
+    - docker push registry.gitlab.com/sojidaniels/e-commerce/carting:latest
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/wallet ./wallet
+    - docker push registry.gitlab.com/sojidaniels/e-commerce/wallet:latest
 
