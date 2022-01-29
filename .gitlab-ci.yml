@@ -2,6 +2,7 @@ image: ubuntu:latest
 
 stages:
   - gcr-build-client
+  - deploy
   
 
 gcr-build-client:
@@ -13,12 +14,35 @@ gcr-build-client:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registry.gitlab.com
     - docker build -t registry.gitlab.com/sojidaniels/e-commerce/client:${CI_COMMIT_SHORT_SHA} ./client
     - docker push registry.gitlab.com/sojidaniels/e-commerce/client:${CI_COMMIT_SHORT_SHA}
-    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA} ./purchase
-    - docker push registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA}
-    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA} ./catalog
-    - docker push registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA}
-    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA} ./carting
-    - docker push registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA}
-    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA} ./wallet
-    - docker push registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA}
+    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA} ./purchase
+    # - docker push registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA}
+    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA} ./catalog
+    # - docker push registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA}
+    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA} ./carting
+    # - docker push registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA}
+    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA} ./wallet
+    # - docker push registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA}
+
+
+deploy:
+  stage: deploy
+  image: ubuntu:18.04
+  before_script:
+    - apt-get update && apt-get install -y git curl unzip
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/client.yaml
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - mv ./kubectl /usr/local/bin/kubectl
+    - apt-get install apt-transport-https ca-certificates gnupg
+    - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+    - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+    - sudo apt-get update && sudo apt-get install google-cloud-sdk
+    - gcloud init
+
+  script:
+    - kubectl apply -f ./k8/client.yaml --kubeconfig=/root/.kube/config
+    - kubectl rollout status deployment core-api-beta-app -n beta
+    - kubectl -n beta get pods
+    - kubectl -n beta get svc
+
 
