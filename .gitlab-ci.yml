@@ -43,7 +43,7 @@ deploy:
   script:
     - gcloud container clusters get-credentials autopilot-cluster-1 --zone europe-central2 --project kubernetes-331211
     - kubectl apply -f ./k8/client.yml
-    - kubectl rollout status deployment client-app -n beta
+    - kubectl rollout status deployment/client-app
     - kubectl -n beta get pods
     - kubectl -n beta get svc
 
