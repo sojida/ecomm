@@ -29,7 +29,7 @@ deploy:
   image: ubuntu:18.04
   before_script:
     - apt-get update && apt-get install -y git curl unzip
-    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/client.yaml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/client.yml
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
     - mv ./kubectl /usr/local/bin/kubectl
@@ -40,7 +40,7 @@ deploy:
     - gcloud init
 
   script:
-    - kubectl apply -f ./k8/client.yaml --kubeconfig=/root/.kube/config
+    - kubectl apply -f ./k8/client.yml --kubeconfig=/root/.kube/config
     - kubectl rollout status deployment core-api-beta-app -n beta
     - kubectl -n beta get pods
     - kubectl -n beta get svc
