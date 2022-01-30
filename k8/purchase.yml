@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purchase
+  labels:
+    app: purchase
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: purchase
+  template:
+    metadata:
+      labels:
+        app: purchase
+    spec:
+      containers:
+      - name: purchase
+        image: registry.gitlab.com/sojidaniels/e-commerce/purchase:<VERSION>
+        ports:
+        - containerPort: 80
+
+      imagePullSecrets: 
+      - name: registry-credentials
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: purchase-service
+spec:
+  selector:
+    app: purchase
+  ports:
+  - port: 80
+    targetPort: 3333
+    protocol: TCP
+  type: NodePort
+

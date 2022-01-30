@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallet-app
+  labels:
+    app: wallet-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallet-app
+  template:
+    metadata:
+      labels:
+        app: wallet-app
+    spec:
+      containers:
+      - name: wallet
+        image: registry.gitlab.com/sojidaniels/e-commerce/wallet:<VERSION>
+        ports:
+        - containerPort: 80
+
+      imagePullSecrets: 
+      - name: registry-credentials
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallet-app-service
+spec:
+  selector:
+    app: wallet-app
+  ports:
+  - port: 80
+    targetPort: 3333
+    protocol: TCP
+  type: NodePort
+

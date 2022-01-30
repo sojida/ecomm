@@ -14,14 +14,14 @@ gcr-build-client:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registry.gitlab.com
     - docker build -t registry.gitlab.com/sojidaniels/e-commerce/client:${CI_COMMIT_SHORT_SHA} ./client
     - docker push registry.gitlab.com/sojidaniels/e-commerce/client:${CI_COMMIT_SHORT_SHA}
-    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA} ./purchase
-    # - docker push registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA}
-    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA} ./catalog
-    # - docker push registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA}
-    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA} ./carting
-    # - docker push registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA}
-    # - docker build -t registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA} ./wallet
-    # - docker push registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA}
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA} ./purchase
+    - docker push registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA}
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA} ./catalog
+    - docker push registry.gitlab.com/sojidaniels/e-commerce/catalog:${CI_COMMIT_SHORT_SHA}
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA} ./carting
+    - docker push registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA}
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA} ./wallet
+    - docker push registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA}
 
 
 deploy:
@@ -29,22 +29,34 @@ deploy:
   image: ubuntu:18.04
   before_script:
     - apt-get update && apt-get install -y git curl unzip
-    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/client.yml
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
     - mv ./kubectl /usr/local/bin/kubectl
     - apt-get install -y apt-transport-https ca-certificates gnupg
     - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    - echo $SERVICE_ACCOUNT_FILE > secret.json
     - apt-get update && apt-get install google-cloud-sdk
+    - echo $SERVICE_ACCOUNT_FILE > secret.json
     - gcloud auth activate-service-account --key-file secret.json
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/client.yml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/purchase.yml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/catalog.yml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/carting.yml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/wallet.yml
 
   script:
     - gcloud container clusters get-credentials autopilot-cluster-1 --zone europe-central2 --project kubernetes-331211
     - kubectl apply -f ./k8/client.yml
     - kubectl rollout status deployment/client-app
-    - kubectl -n beta get pods
-    - kubectl -n beta get svc
+    - kubectl apply -f ./k8/wallet.yml
+    - kubectl rollout status deployment/wallet-app
+    - kubectl apply -f ./k8/purchase.yml
+    - kubectl rollout status deployment/purchase-app
+    - kubectl apply -f ./k8/catalog.yml
+    - kubectl rollout status deployment/catalog-app
+    - kubectl apply -f ./k8/carting.yml
+    - kubectl rollout status deployment/carting-app
+    - kubectl get pods
+    - kubectl get svc
 
 
