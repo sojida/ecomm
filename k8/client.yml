@@ -19,6 +19,9 @@ spec:
         image: registry.gitlab.com/sojidaniels/e-commerce/client:<VERSION>
         ports:
         - containerPort: 80
+
+      imagePullSecrets: 
+      - name: registry-credentials
   
 ---
 
