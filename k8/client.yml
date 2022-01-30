@@ -19,6 +19,13 @@ spec:
         image: registry.gitlab.com/sojidaniels/e-commerce/client:<VERSION>
         ports:
         - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3333
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 2
 
       imagePullSecrets: 
       - name: registry-credentials

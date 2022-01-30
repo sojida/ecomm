@@ -1,23 +1,11 @@
 const axios = require('axios');
 
-const Services = {}
-
-const RegisterServices = async () => {
-    const { data: Services } = await axios.default.get('http://consul:8500/v1/agent/services');
-
-    for (const service in Services) {
-        const currentService = Services[service];
-        if (!Services[service] && service !== 'consul') {
-            Services[service] = currentService.Address
-        }
-    }
-
+const Services = {
+    carting: 'http://localhost:3030',
+    catalog: 'http://localhost:3000',
+    wallet: 'http://localhost:8000',
+    purchase: 'http://localhost:4000',
 }
 
-setInterval(() => {
-    RegisterServices()
-}, 60000)
-
-RegisterServices()
 
 module.exports = { Services};
