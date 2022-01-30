@@ -13,6 +13,10 @@ app.use(express.json());
 const clients = {}
 
 
+app.get('/', async (req, res) => {
+    return res.status(200).send('Service client api');
+})
+
 app.get('/health', async (req, res) => {
     return res.status(200).json({ status: 'UP' });
 })
