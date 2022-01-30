@@ -34,7 +34,7 @@ spec:
     app: catalog-app
   ports:
   - port: 80
-    targetPort: 3333
+    targetPort: 3000
     protocol: TCP
   type: NodePort
 

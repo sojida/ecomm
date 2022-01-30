@@ -34,7 +34,7 @@ spec:
     app: wallet-app
   ports:
   - port: 80
-    targetPort: 3333
+    targetPort: 8000
     protocol: TCP
   type: NodePort
 

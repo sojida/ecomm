@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: purchase
+  name: purchase-app
   labels:
-    app: purchase
+    app: purchase-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: purchase
+      app: purchase-app
   template:
     metadata:
       labels:
-        app: purchase
+        app: purchase-app
     spec:
       containers:
       - name: purchase
@@ -28,13 +28,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: purchase-service
+  name: purchase-app-service
 spec:
   selector:
-    app: purchase
+    app: purchase-app
   ports:
   - port: 80
-    targetPort: 3333
+    targetPort: 4000
     protocol: TCP
   type: NodePort
 
