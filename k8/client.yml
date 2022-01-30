@@ -17,10 +17,6 @@ spec:
       containers:
       - name: client
         image: registry.gitlab.com/sojidaniels/e-commerce/client:<VERSION>
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
         ports:
         - containerPort: 80
   
