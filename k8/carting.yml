@@ -33,7 +33,7 @@ spec:
   selector:
     app: carting-app
   ports:
-  - port: 80
+  - port: 3030
     targetPort: 3030
     protocol: TCP
   type: NodePort
