@@ -53,5 +53,5 @@ spec:
     service:
       name: client-app-service
       port:
-        number: 8080
+        number: 80
 
