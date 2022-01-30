@@ -60,5 +60,5 @@ spec:
     service:
       name: client-app-service
       port:
-        number: 80
+        number: 3333
 
