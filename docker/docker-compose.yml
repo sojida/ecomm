@@ -16,6 +16,8 @@ services:
       - consul
     networks:
       - app_net
+    env_file:
+      - ../.env
   carting:
     build: ../carting
     ports:

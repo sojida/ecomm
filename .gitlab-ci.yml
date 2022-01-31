@@ -2,18 +2,18 @@ image: ubuntu:latest
 
 stages:
   - test_client
-  - gcr-build-client
+  - gcr-build
   - deploy
   
 
-gcr-build-client:
-  stage: gcr-build-client
+gcr-build:
+  stage: gcr-build
   image: docker:latest
   services:
     - docker:dind
   script:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD registry.gitlab.com
-    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/client:${CI_COMMIT_SHORT_SHA} ./client
+    - docker build -t registry.gitlab.com/sojidaniels/e-commerce/client:${CI_COMMIT_SHORT_SHA} --build-arg PM2_PUBLIC_KEY=$PM2_PUBLIC_KEY --build-arg PM2_SECRET_KEY=$PM2_SECRET_KEY ./client
     - docker push registry.gitlab.com/sojidaniels/e-commerce/client:${CI_COMMIT_SHORT_SHA}
     - docker build -t registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA} ./purchase
     - docker push registry.gitlab.com/sojidaniels/e-commerce/purchase:${CI_COMMIT_SHORT_SHA}
