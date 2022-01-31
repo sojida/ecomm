@@ -3,6 +3,7 @@ image: ubuntu:latest
 stages:
   - gcr-build-client
   - deploy
+  - test_client
   
 
 gcr-build-client:
@@ -63,3 +64,11 @@ deploy:
   only:
     - main
 
+test_client:
+  stage: test_client
+  image: node:14
+  before_script:
+    - cd ./client
+    - npm install
+  script:
+    - npm test
