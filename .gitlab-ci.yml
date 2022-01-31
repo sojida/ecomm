@@ -1,9 +1,9 @@
 image: ubuntu:latest
 
 stages:
+  - test_client
   - gcr-build-client
   - deploy
-  - test_client
   
 
 gcr-build-client:
