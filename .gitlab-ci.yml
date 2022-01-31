@@ -22,6 +22,8 @@ gcr-build-client:
     - docker push registry.gitlab.com/sojidaniels/e-commerce/carting:${CI_COMMIT_SHORT_SHA}
     - docker build -t registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA} ./wallet
     - docker push registry.gitlab.com/sojidaniels/e-commerce/wallet:${CI_COMMIT_SHORT_SHA}
+  only:
+    - main
 
 
 deploy:
@@ -58,5 +60,6 @@ deploy:
     - kubectl rollout status deployment/carting-app
     - kubectl get pods
     - kubectl get svc
-
+  only:
+    - main
 

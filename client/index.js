@@ -23,12 +23,16 @@ app.get('/health', async (req, res) => {
 
 app.post('/client', async (req, res) => {
     const client = new Client()
-    const wallet = await Wallet.CreateWallet({ client_id: client.id });
+    const new_wallet = await Wallet.CreateWallet({ client_id: client.id });
     const cart = await Cart.CreateCart();
+    
+    await Wallet.CreateTransaction({ wallet_id: new_wallet.id, amount: 5000, description: 'firt timer'})
+    const wallet = await Wallet.GetWallet({ wallet_id: new_wallet.id });
 
     client.setWallet(wallet);
     client.setCart(cart);
 
+    await Catalog.CreateItems();
     clients[client.id] = client;
     res.status(201).json({ client });
 })
@@ -37,7 +41,57 @@ app.get('/client/:client_id', async (req, res) => {
     const {client_id} = req.params;
 
     const client = clients[client_id]
+
+    if (!client) {
+        return res.status(404).json({
+            message: 'Client not found'
+        })
+    }
+
+    const wallet = await Wallet.GetWallet({ wallet_id: client.wallet.id });
+    client.setWallet(wallet)
+
     return res.status(200).json({ client });
+})
+
+app.get('/catalogs', async (req, res) => {
+
+    const catalog = await Catalog.GetItems()
+    return res.status(200).json({ catalog });
+})
+
+app.post('/client/:client_id/cart/:product_id', async(req, res) => {
+    const {product_id, client_id} = req.params;
+
+    const client = clients[client_id];
+
+    if (!client) {
+        return res.status(404).json({
+            message: 'Client not found'
+        })
+    }
+
+    const {product} = await Catalog.GetItem(product_id);
+
+    if (!product) {
+        return res.status(404).json({
+            message: 'Product not found'
+        })
+    }
+
+    await Cart.AddItem(client.cart.Id, `${product.id}`, product.name, product.price)
+
+    const cart = await Cart.GetCart({ cart_id: client.cart.Id })
+
+    return res.status(200).json({ cart })
+})
+
+app.get('/purchase/:client_id', async (req, res) => {
+    const {client_id} = req.params;
+
+    const purchases = await Purchase.GetPurchase({ client_id });
+
+    return res.status(200).json(purchases)
 })
 
 app.post('/purchase/:client_id', async (req, res) => {
@@ -97,6 +151,9 @@ app.post('/purchase/:client_id', async (req, res) => {
     }
 
     await Purchase.CreatePurchase({ purchase })
+
+    const new_cart = await Cart.CreateCart();
+    client.setCart(new_cart)
 
     return res.status(200).json({ message: 'purchase created successfully' ,purchase });
 })
