@@ -48,7 +48,7 @@ deploy:
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" ./k8/wallet.yml
 
   script:
-    - gcloud container clusters get-credentials autopilot-cluster-1 --zone europe-central2 --project kubernetes-331211
+    - gcloud container clusters get-credentials team-alpha --zone europe-west4 --project kubernetes-331211
     - kubectl apply -f ./k8/client.yml
     - kubectl rollout status deployment/client-app
     - kubectl apply -f ./k8/wallet.yml
