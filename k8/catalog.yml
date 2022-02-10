@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-app
+  labels:
+    app: catalog-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-app
+  template:
+    metadata:
+      labels:
+        app: catalog-app
+    spec:
+      containers:
+      - name: catalog
+        image: registry.gitlab.com/sojidaniels/e-commerce/catalog:<VERSION>
+        ports:
+        - containerPort: 80
+
+      imagePullSecrets: 
+      - name: registry-credentials
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-app-service
+spec:
+  selector:
+    app: catalog-app
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+  type: NodePort
+

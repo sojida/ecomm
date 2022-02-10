@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-app
+  labels:
+    app: client-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-app
+  template:
+    metadata:
+      labels:
+        app: client-app
+    spec:
+      containers:
+      - name: client
+        image: registry.gitlab.com/sojidaniels/e-commerce/client:<VERSION>
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3333
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3333
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 2
+
+      imagePullSecrets: 
+      - name: registry-credentials
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-app-service
+spec:
+  selector:
+    app: client-app
+  ports:
+  - port: 80
+    targetPort: 3333
+    protocol: TCP
+  type: NodePort
+
